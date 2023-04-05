@@ -1,0 +1,56 @@
+Input:
+    Semantic map:
+        Abstimmungsbedarf:
+        Punkte:
+            - x,y,z 
+            - befahrbar/nicht befahrbar                                 # Absprechbedarf welche Daten in Semantic Map 
+            - Flag: Ziel                                                # Absprechbedarf welche Daten in Semantic Map
+            
+    CurrentPose:
+            - x,y,z
+
+Output:
+    Base_waypoints (Liste der Wegpunkte)
+
+Algorithmus:
+    CurrentPose in SemanticMap finden                                   # Auto lokalisieren
+    Ziel der SemanticMap merken                                         # Wo ist das Zielflag in der Semantic Map gesetzt
+    Variable WaypointsListe anlegen                                     # Ausgang des Algorithmus (Route)
+
+    Standardtrajektorie berechnen/statische festlegen                   # Absprechbedarf, wie wir ST anlegen (Vorschlag: Liste von Waypoints)
+
+    # Weg zur Standardtrajektorie
+    geringsterAbstand = großerWert                                      # Damit Weg zur Trajektorie gefunden wird
+    nächsterPunkt                                                       # Variable nächster Punkt anlegen
+    for Punkt in Standardtrajektorie:                                   # Nächster Punkt der Standardtrajektorie von CurrentPose suche
+        Abstand von Punkt zu CurrentPose berechnen                      
+        if Abstand < geringsterAbstand:
+            nächsterPunkt = Punkt
+
+    Richtung = nächsterPunkt - CurrentPose                              # Richtung vom CurrentPose zum nächsten Punkt
+    loop
+        if CurrentPose != nächsterPunkt:                                # Fahrzeug von CurrentPose zum nächsten Punkt bewegen
+            if (CurrentPose.x != CurrentPose.x)                         # Erst in x Richtung
+                Standarttrajektorie.append(CurrentPose+ (1,0,0))
+            else if (CurrentPose.y != CurrentPose.y)                    # Dann in y Richtung
+                Standarttrajektorie.append(CurrentPose+ (0,1,0))
+    end
+
+
+    # Weg ab dem man sich auf der Standardtrajektorie befindet
+    Start = False
+    for Punkt int Standardtrajektorie:
+        if CurrentPose == Punkt && Start == False:                      # Um unseren Startpunkt in der Trajektorie herauszufeinde
+            Start = True
+        if AbbruchStandardtrajektorie:                                  # Falls das Ziel dedektiert wurde
+            break
+        Waypointsliste.append(Punkt)                                    # Punkt der Standardtajektorie dem Output anhängen
+        if Punkt +(0,Abstand zu Parkplatz,0) == Ziel                    # Falls ein Parkplatz unter der STandardtrajektorie das Ziel ist
+            AbbruchStandardtrajektorie = true
+            Waypointsliste.append(Punkt+(0,1,0))
+        else if Punkt+(0,- AbstandParkplatz,0) == Ziel                  # Falls ein Parkplatz unter der Standardtajektorie das Ziel ist
+            AbbruchStandardtrajektorie = true
+            Waypointsliste.append(Punkt+(0,- Abstand zum Parkplatz,0))
+        
+
+
