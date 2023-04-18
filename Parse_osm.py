@@ -43,6 +43,6 @@ for point in points:
         y.append(float(points[point]['y']))
 
 ax = plt.subplot()
-ax.scatter(x, y, s=3)
-ax.scatter(x_park, y_park, color='red', s=3)
+ax.scatter(y, x, s=3)
+ax.scatter(y_park, x_park, color='red', s=3)
 plt.show()
