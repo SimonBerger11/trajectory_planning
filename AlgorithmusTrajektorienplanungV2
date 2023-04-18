@@ -1,0 +1,15 @@
+Input:
+    Semantic map:
+        
+        Punkte:
+            - x,y
+            
+            
+    CurrentPose:
+            - x,y
+
+    Ziel:
+            - x,y
+
+Output:
+    Base_waypoints (Liste der Wegpunkte)
