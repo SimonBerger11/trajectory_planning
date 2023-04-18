@@ -3,8 +3,8 @@ Input:
         Abstimmungsbedarf:
         Punkte:
             - x,y,z 
-            - befahrbar/nicht befahrbar                                 # Absprechbedarf welche Daten in Semantic Map 
-            - Flag: Ziel                                                # Absprechbedarf welche Daten in Semantic Map
+            - befahrbar/nicht befahrbar                                 # Straße: Tag lanelet sonst kein tag
+            - Flag: Ziel                                                # Parkplätze: Tag Parking_space und breite
             
     CurrentPose:
             - x,y,z
