@@ -2,6 +2,7 @@
 #from collections import Iterable 
 
 import xml.etree.ElementTree as ET
+import matplotlib.pyplot as plt
 tree = ET.parse('Vorabkarte_mit_Parkplaetze_3.xml')
 root = tree.getroot()
 
@@ -32,4 +33,24 @@ for point in points:
     print(point, points[point])
 
 
+# plot
+fig, ax = plt.subplots()
+x = list()
+y = list()
+x_park = list()
+y_park = list()
+for point in points:
+    try:
+        if points[point]['Typ'] == 'parking_space':
+            x_park.append(float(points[point]['x']))
+            y_park.append(float(points[point]['y']))
+    except:
+        x.append(float(points[point]['x']))
+        y.append(float(points[point]['y']))
+
+#print 
+fig, ax = plt.subplots()
+ax.scatter(x, y)
+ax.scatter(x_park, y_park, color='red')
+plt.show()
 
