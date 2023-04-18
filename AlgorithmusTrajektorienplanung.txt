@@ -3,7 +3,7 @@ Input:
         Abstimmungsbedarf:
         Punkte:
             - x,y,z 
-            - befahrbar/nicht befahrbar                                 # Straße: Tag lanelet sonst kein tag
+            - befahrbar/nicht befahrbar                                 # Straße: Tag lanelet sonst kein tag (muss nicht eingebunden werden)
             - Flag: Ziel                                                # Parkplätze: Tag Parking_space und breite
             
     CurrentPose:
