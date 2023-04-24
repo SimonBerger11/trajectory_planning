@@ -1,4 +1,7 @@
-Greedy-Algorithmen: 
+- Greedy-Algorithmen: 
+Benötigte Inputs: Kantengewicht
+
+Mögliche Verfahren:
 
 Dijkstra:
 https://de.wikipedia.org/wiki/Dijkstra-Algorithmus#Algorithmus_in_Pseudocode
@@ -8,3 +11,41 @@ https://www.bwl-lexikon.de/wiki/prim-algorithmus/		(Vom Namen der Website nicht 
 
 Kruskal-Algo:
 https://www.bwl-lexikon.de/wiki/kruskal-algorithmus/
+
+Output:
+Berechnet einen kürzesten Weg zwischen dem gegebenen Startknoten und den anderen Knoten in einem kantengewichteten, gerichteten Graphen
+
+- MILB Verfahren (mathematisch): https://mediatum.ub.tum.de/doc/1428366/file.pdf (Handlungsreisender)
+
+- Elastische Bänder: https://mediatum.ub.tum.de/doc/1428366/file.pdf		(Sensorbasiert)
+
+- Weitere Baumstrukturverfahren:
+	Branch and Bound,  A*-Algorithmus
+
+Greedy:
+
+Berechnung und Kantengewichte wird nach jeder Berechnung neu durchgeführt
+-> Reaktion auf spätere Ereignisse ist möglich (Ausbaufähig) 
+
+Überlegung Gewichtung:
+	Gewichtung Parkplatz: 1
+	Gewichtung kein Typ: 1
+	Gewichtung keine Verbindung: 10000
+
+ALgorithmen zur Auswahl:
+
+Dijkstra: 
++ findet kürzesten Weg
+
+Prim:
+- nur für ungerichtete Graphen
+- findet MSP (Minimum Spanning Tree)
+
+Kruskal:
+- findet MSP
+
+A*:
++ wie Dijkstra 
++- nutzt Schätzfunktion um Laufzeit zu verringern
+
+

@@ -27,6 +27,9 @@ for way in root.findall("way"):
             points[nd.attrib["ref"]]["Typ"] = type
 
 
+for point in points.items():
+    print(point )
+
 # plot
 fig, ax = plt.subplots()
 x = list()
@@ -41,6 +44,7 @@ for point in points:
     except:
         x.append(float(points[point]['x']))
         y.append(float(points[point]['y']))
+
 
 ax = plt.subplot()
 ax.scatter(y, x, s=3)
