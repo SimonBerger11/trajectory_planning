@@ -1,0 +1,12 @@
+Graphen Aufbauen mit Einträgen:
+
+Struktur:
+('235', {'x': '1', 'y': '1','z' 'Typ': 'parking_space'})
+
+Typen: 
+parking_space
+way
+object
+
+Aufbau:
+Grobe Darstellung des Parkplatzes

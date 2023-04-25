@@ -52,3 +52,5 @@ A*:
 -> Zeitverlauf Dijkstra:
 https://www.happycoders.eu/de/algorithmen/dijkstra-algorithmus-java/
 -> nicht zeitkritisch, wenn nicht 50.000 Knoten
+
+-> A*
