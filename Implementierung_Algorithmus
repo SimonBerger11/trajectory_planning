@@ -1,0 +1,25 @@
+import math
+
+class Node:
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+        self.parent = None
+        self.costStart = 0
+        self.costDest = 0
+        self.sum = 0
+        
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y and self.z == other.z
+
+def astar(start, end, obstacles):
+    open_list = []
+    closed_list = []
+    
+    start_node = Node(start[0], start[1], start[2])
+    end_node = Node(end[0], end[1], end[2])
+    
+
+
+
