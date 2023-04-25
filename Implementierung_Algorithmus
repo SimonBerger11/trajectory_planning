@@ -1,4 +1,5 @@
 import math
+from pylab import *
 
 class Node:
     def __init__(self, x, y, z):
@@ -7,19 +8,121 @@ class Node:
         self.z = z
         self.parent = None
         self.costStart = 0
-        self.costDest = 0
+        self.minimumCost = 0
         self.sum = 0
         
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y and self.z == other.z
 
+ax = plt.subplot()
+
+
+collision = [(2,1,0),(1,1,0),(4,8,0),(4,9,0)]
+
+collision_x = []
+collision_y = []
+for col in collision:
+    collision_x.append(col[0])
+    collision_y.append(col[1])
+
+ax.scatter(collision_x, collision_y, color= "red", s = 10)
+
 def astar(start, end, obstacles):
-    open_list = []
-    closed_list = []
-    
+    open_list = []      # Alle noch zu untersuchenden nodes
+    closed_list = []    # Alle schon untersuchten nodes
+
     start_node = Node(start[0], start[1], start[2])
     end_node = Node(end[0], end[1], end[2])
-    
 
+    open_list.append(start_node)
+
+    while len(open_list) >0:
+        # Suche des nächsten current_node mit der kleinsten Gesamtsumme
+        current_node = open_list[0]
+        current_index = 0
+
+
+
+        for index, item in enumerate(open_list):
+            if item.sum < current_node.sum:
+                current_node = item
+                current_index = index
+
+        ax.scatter(current_node.x, current_node.y, color = "blue", s = 10)
+        
+        open_list.pop(current_index)
+        closed_list.append(current_node)
+
+        if current_node == end_node:
+            path = []
+            current = current_node
+            while current is not None:
+                ax.scatter(current.x, current.y, color = "green", s = 10)
+                path.append((current.x, current.y, current.z))
+                current = current.parent
+            return path
+        
+        
+        # nächsten nodes berechnen
+        children = []
+        for pos_update in [(1,0,0),(0,1,0),(-1,0,0),(0,-1,0)]:#,(1,1,0),(1,-1,0),(-1,1,0),(-1,-1,0)]:
+            
+            next_pos = (current_node.x + pos_update[0], current_node.y + pos_update[1], current_node.z + pos_update[2])
+
+            # prüfen ob next_pos ein Hindernis ist
+            if next_pos in obstacles:
+                continue
+
+            next_node = Node(next_pos[0], next_pos[1], next_pos[2])
+            next_node.parent = current_node
+            
+            children.append(next_node)
+
+        # Prüfen ob children schon behandelt wurden, wenn nicht -> Hinzufügen zur Open_List
+        for child in children:
+            flag = False
+            for closed in closed_list:
+                if child.x == closed.x and child.y == closed.y:
+                    flag = True
+                    continue
+            
+            for open in open_list:
+                if child.x == open.x and child.y == open.y:
+                    flag = True
+                    break
+
+            if flag == True:
+                continue
+
+            child.costStart = current_node.costStart + 1
+            child.minimumCost = math.sqrt((child.x - end_node.x) ** 2 + (child.y - end_node.y) ** 2 + (child.z - end_node.z) ** 2)
+            child.sum = child.costStart + child.minimumCost
+            
+            for open_node in open_list:
+                if child == open_node and child.costStart > open_node.costStart:
+                    continue
+            
+            ax.scatter(child.x,child.y, color = "orange", s = 10)
+
+            open_list.append(child)
+    
+    return None
+
+
+        
+start_point = (1,0,0)
+end_point = (10,15,0)
+
+
+result = astar(start_point,end_point,collision)
+#print(result)
+
+scatter(start_point[0], start_point[1], color = "green", s = 40)
+scatter(end_point[0], end_point[1], color = "green", s = 40)
+
+
+
+
+plt.show()        
 
 

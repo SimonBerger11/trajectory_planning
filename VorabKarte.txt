@@ -5,8 +5,8 @@ Struktur:
 
 Typen: 
 parking_space
-way
 object
+way
 
 Aufbau:
 Grobe Darstellung des Parkplatzes
