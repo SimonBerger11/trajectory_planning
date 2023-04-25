@@ -34,7 +34,7 @@ Berechnung und Kantengewichte wird nach jeder Berechnung neu durchgeführt
 
 ALgorithmen zur Auswahl:
 
-Dijkstra: 
+Dijkstra: https://www.happycoders.eu/de/algorithmen/dijkstra-algorithmus-java/
 + findet kürzesten Weg
 
 Prim:
@@ -49,3 +49,6 @@ A*:
 +- nutzt Schätzfunktion um Laufzeit zu verringern
 
 
+-> Zeitverlauf Dijkstra:
+https://www.happycoders.eu/de/algorithmen/dijkstra-algorithmus-java/
+-> nicht zeitkritisch, wenn nicht 50.000 Knoten
