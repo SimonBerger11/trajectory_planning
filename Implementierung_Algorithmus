@@ -136,7 +136,7 @@ def astar(start, end, obstacles):
             
 
             open_list.append(child)
-        #plt.pause(0.0001)
+        plt.pause(0.0001)
         cnt += 1        # for visualization
 
         #fig.canvas.draw()
