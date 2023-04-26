@@ -1,6 +1,11 @@
 import math
 from pylab import *
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+import numpy as np
+import time
 
+visualization = []
 class Node:
     def __init__(self, x, y, z):
         self.x = x
@@ -14,10 +19,24 @@ class Node:
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y and self.z == other.z
 
-ax = plt.subplot()
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+        
+start_point = (1,0,0)
+end_point = (10,15,0)
+scatter(start_point[0], start_point[1], color = "green", s = 40)
+scatter(end_point[0], end_point[1], color = "green", s = 40)
 
 
-collision = [(2,1,0),(1,1,0),(4,8,0),(4,9,0)]
+#plt.ion()
+#plt.show()
+#fig.canvas.draw()
+
+
+#collision = [(2,1,0),(1,1,0),(4,8,0),(4,9,0),(9,14,0),(10,14,0),(11,14,0),(9,15,0),(11,15,0),(5,13,0),(6,13,0),(7,13,0),(8,13,0),(8,12,0),(8,11,0),(8,10,0),(8,9,0),(8,8,0),]
+collision = [(9,14,0),(10,14,0),(11,14,0),(9,15,0),(11,15,0),(5,13,0),(6,13,0),(7,13,0),(8,13,0),(8,12,0),(8,11,0),(8,10,0),(8,9,0),(8,8,0),]
+
 
 collision_x = []
 collision_y = []
@@ -25,7 +44,7 @@ for col in collision:
     collision_x.append(col[0])
     collision_y.append(col[1])
 
-ax.scatter(collision_x, collision_y, color= "red", s = 10)
+ax.scatter(collision_x, collision_y, color= "red", s = 40)
 
 def astar(start, end, obstacles):
     open_list = []      # Alle noch zu untersuchenden nodes
@@ -35,21 +54,25 @@ def astar(start, end, obstacles):
     end_node = Node(end[0], end[1], end[2])
 
     open_list.append(start_node)
-
+    
+    cnt = 0
     while len(open_list) >0:
         # Suche des nächsten current_node mit der kleinsten Gesamtsumme
+        # time.sleep(0.1)
         current_node = open_list[0]
         current_index = 0
 
 
 
         for index, item in enumerate(open_list):
-            if item.sum < current_node.sum:
+            if item.sum < current_node.sum:           #eigentlich sum 
                 current_node = item
                 current_index = index
 
         ax.scatter(current_node.x, current_node.y, color = "blue", s = 10)
+        #plt.pause(0.2)
         
+
         open_list.pop(current_index)
         closed_list.append(current_node)
 
@@ -57,7 +80,8 @@ def astar(start, end, obstacles):
             path = []
             current = current_node
             while current is not None:
-                ax.scatter(current.x, current.y, color = "green", s = 10)
+                ax.scatter(current.x, current.y, color = "green", s = 20)
+                #plt.pause(0.2)
                 path.append((current.x, current.y, current.z))
                 current = current.parent
             return path
@@ -79,22 +103,27 @@ def astar(start, end, obstacles):
             children.append(next_node)
 
         # Prüfen ob children schon behandelt wurden, wenn nicht -> Hinzufügen zur Open_List
-        for child in children:
+        for count, child in enumerate(children):
             flag = False
             for closed in closed_list:
                 if child.x == closed.x and child.y == closed.y:
                     flag = True
                     continue
             
+            if count <4:
+                child.costStart = current_node.costStart + 1
+            else:
+                child.costStart = current_node.costStart + 1.4
+
             for open in open_list:
-                if child.x == open.x and child.y == open.y:
+                if child.x == open.x and child.y == open.y and child.costStart >= open.costStart:
                     flag = True
                     break
 
             if flag == True:
                 continue
 
-            child.costStart = current_node.costStart + 1
+            #child.costStart = current_node.costStart + 1
             child.minimumCost = math.sqrt((child.x - end_node.x) ** 2 + (child.y - end_node.y) ** 2 + (child.z - end_node.z) ** 2)
             child.sum = child.costStart + child.minimumCost
             
@@ -103,22 +132,19 @@ def astar(start, end, obstacles):
                     continue
             
             ax.scatter(child.x,child.y, color = "orange", s = 10)
+            
+            
 
             open_list.append(child)
-    
+        #plt.pause(0.0001)
+        cnt += 1        # for visualization
+
+        #fig.canvas.draw()
     return None
 
-
-        
-start_point = (1,0,0)
-end_point = (10,15,0)
-
-
 result = astar(start_point,end_point,collision)
-#print(result)
 
-scatter(start_point[0], start_point[1], color = "green", s = 40)
-scatter(end_point[0], end_point[1], color = "green", s = 40)
+
 
 
 
