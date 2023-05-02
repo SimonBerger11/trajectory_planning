@@ -20,7 +20,6 @@ Bemerkung Elias:
 - Punkte_all liste
 
 """
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -34,7 +33,7 @@ def generate_trajectory(height, length):
     n = 4
     
     #resolution
-    num_points = 1000
+    num_points = 4000
     
     # create the array of angles
     theta = np.linspace(0, 2*np.pi, num_points)
@@ -54,7 +53,6 @@ def generate_trajectory(height, length):
         trajectory_coordinates_circle.append(('id_number', {'x' : x[i], 'y' : y[i], 'z' : 0, 'Type' : 'way'}))
         trajectory_coordinates_middle_sec.append(('id_number', {'x' : x_middle_section[i], 'y' : y_middle_section[i], 'z' : 0, 'Type' : 'way'}))
     return trajectory_coordinates_circle, trajectory_coordinates_middle_sec
-
 
 def generate_parking_house(height, length):
     """
@@ -91,8 +89,6 @@ def generate_parking_house(height, length):
     
     
     
-    
-    
 def generate_parking_spaces(height, length):
     """
     function generate_parking_house takes 2 input parameters height and length,
@@ -109,24 +105,24 @@ def generate_graph(height, length):
     which describe the geometry of a parking house, and plots a graph of a parking house
     """
     
-    #trajectory_circle, trajectory_middle_section = generate_trajectory(height, length)
+    trajectory_circle, trajectory_middle_section = generate_trajectory(height, length)
     
     coordinates_traj_circle_x = []
     coordinates_traj_circle_y = []
     coordinates_traj_middle_sec_x = []
     coordinates_traj_middle_sec_y = []
 
-    #for item in trajectory_circle:
-    #    x = item[1]['x']
-    #    y = item[1]['y']
-    #    coordinates_traj_circle_x.append(x)
-    #    coordinates_traj_circle_y.append(y)
+    for item in trajectory_circle:
+        x = item[1]['x']
+        y = item[1]['y']
+        coordinates_traj_circle_x.append(x)
+        coordinates_traj_circle_y.append(y)
         
-    #for item in trajectory_middle_section:
-    #    x = item[1]['x']
-    #    y = item[1]['y']
-    #    coordinates_traj_middle_sec_x.append(x)
-    #    coordinates_traj_middle_sec_y.append(y) 
+    for item in trajectory_middle_section:
+        x = item[1]['x']
+        y = item[1]['y']
+        coordinates_traj_middle_sec_x.append(x)
+        coordinates_traj_middle_sec_y.append(y) 
 
 
     coordinates_parking_house = generate_parking_house(height, length)
@@ -135,13 +131,15 @@ def generate_graph(height, length):
     fig, ax = plt.subplots()
     
     # plot the points and connect them with lines
-    plt.plot(coordinates_traj_circle_x, coordinates_traj_circle_y,'-b', label='trajectory')
-    plt.plot(coordinates_traj_middle_sec_x, coordinates_traj_middle_sec_y, '-b')
-    plt.plot(coordinates_parking_house[0][0], coordinates_parking_house[0][1], '#000000', label='parking house boundaries')
-    plt.plot(coordinates_parking_house[1][0], coordinates_parking_house[1][1], '#000000')
-    plt.plot(coordinates_parking_house[2][0], coordinates_parking_house[2][1], '#000000')
-    plt.plot(coordinates_parking_house[3][0], coordinates_parking_house[3][1], '#000000')
-    
+    #plt.plot(coordinates_traj_circle_x, coordinates_traj_circle_y,'-b', label='trajectory')
+    plt.scatter(coordinates_traj_circle_x, coordinates_traj_circle_y, color='blue')
+
+    plt.scatter(coordinates_traj_middle_sec_x, coordinates_traj_middle_sec_y, color='blue')
+
+    #plt.plot(coordinates_parking_house[0][0], coordinates_parking_house[0][1], '#000000', label='parking house boundaries')
+    #plt.plot(coordinates_parking_house[1][0], coordinates_parking_house[1][1], '#000000')
+    #plt.plot(coordinates_parking_house[2][0], coordinates_parking_house[2][1], '#000000')
+    #plt.plot(coordinates_parking_house[3][0], coordinates_parking_house[3][1], '#000000')
     for x_var in coordinates_parking_spaces:
         ax.plot([x_var, x_var], [coordinates_parking_house[1][1].max(), coordinates_parking_house[1][1].max() + 8], '-r')
         ax.plot([x_var, x_var], [coordinates_parking_house[0][1].max(), coordinates_parking_house[0][1].max() - 8], '-r')
@@ -149,7 +147,6 @@ def generate_graph(height, length):
         ax.plot([x_var, x_var], [coordinates_parking_house[3][1].max(), coordinates_parking_house[3][1].max() - 8], '-r')
         ax.plot([x_var, x_var], [coordinates_parking_house[0][1].min(), coordinates_parking_house[0][1].min() + 8], '-r')
     plt.legend(loc='best')
-
 generate_graph(30, 30)
 plt.show()
 
