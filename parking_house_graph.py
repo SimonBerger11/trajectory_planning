@@ -129,7 +129,6 @@ def generate_graph(height, length):
     full_trajectory = generate_trajectory(height, length)[0]
     trajectory_circle = generate_trajectory(height, length)[1]
     trajectory_middle_section = generate_trajectory(height, length)[2]
-    trajectory_parking_spaces = generate_parking_spaces(height, length)[1]
     
     coordinates_full_traj_x =[]
     coordinates_full_traj_y = []
@@ -161,7 +160,8 @@ def generate_graph(height, length):
 
     coordinates_parking_house = generate_parking_house(height, length)
     coordinates_parking_spaces = generate_parking_spaces(height, length)[0]
-    
+    trajectory_to_parking_spaces = generate_parking_spaces(height, length)[1]
+
     fig, ax = plt.subplots()
     
     # plot the points and connect them with lines
@@ -184,7 +184,7 @@ def generate_graph(height, length):
         ax.plot([x_var, x_var], [coordinates_parking_house[0][1].min(), coordinates_parking_house[0][1].min() + 8], '-r')
 
     
-    for x_var in trajectory_parking_spaces:
+    for x_var in trajectory_to_parking_spaces:
         
         plt.scatter(np.linspace(x_var, x_var, 1000), np.linspace(max(coordinates_traj_circle_y), max(coordinates_traj_circle_y) + 8, 1000), color='blue')
         plt.scatter(np.linspace(x_var, x_var, 1000), np.linspace(max(coordinates_traj_circle_y), max(coordinates_traj_circle_y) - 8, 1000), color='blue')
