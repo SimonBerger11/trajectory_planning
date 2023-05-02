@@ -16,7 +16,8 @@ Grobe Darstellung des Parkplatzes
 """
 Bemerkung Elias:
 - Fahrbahnmarkierungen zwischen dem Weg entfernen
-- evtl als Punkte statt linien
+- (evtl als Punkte statt linien)
+- Punkte_all liste
 
 """
 import pandas as pd

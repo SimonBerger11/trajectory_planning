@@ -28,15 +28,8 @@ end_point = (10,15,0)
 scatter(start_point[0], start_point[1], color = "green", s = 40)
 scatter(end_point[0], end_point[1], color = "green", s = 40)
 
-
-#plt.ion()
-#plt.show()
-#fig.canvas.draw()
-
-
 #collision = [(2,1,0),(1,1,0),(4,8,0),(4,9,0),(9,14,0),(10,14,0),(11,14,0),(9,15,0),(11,15,0),(5,13,0),(6,13,0),(7,13,0),(8,13,0),(8,12,0),(8,11,0),(8,10,0),(8,9,0),(8,8,0),]
 collision = [(9,14,0),(10,14,0),(11,14,0),(9,15,0),(11,15,0),(5,13,0),(6,13,0),(7,13,0),(8,13,0),(8,12,0),(8,11,0),(8,10,0),(8,9,0),(8,8,0),]
-
 
 collision_x = []
 collision_y = []
@@ -136,7 +129,7 @@ def astar(start, end, obstacles):
             
 
             open_list.append(child)
-        plt.pause(0.0001)
+        #plt.pause(0.0001)
         cnt += 1        # for visualization
 
         #fig.canvas.draw()
