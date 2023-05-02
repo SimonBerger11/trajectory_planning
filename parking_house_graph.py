@@ -12,6 +12,13 @@ way
 Aufbau:
 Grobe Darstellung des Parkplatzes
 """
+
+"""
+Bemerkung Elias:
+- Fahrbahnmarkierungen zwischen dem Weg entfernen
+- evtl als Punkte statt linien
+
+"""
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -101,24 +108,24 @@ def generate_graph(height, length):
     which describe the geometry of a parking house, and plots a graph of a parking house
     """
     
-    trajectory_circle, trajectory_middle_section = generate_trajectory(height, length)
+    #trajectory_circle, trajectory_middle_section = generate_trajectory(height, length)
     
     coordinates_traj_circle_x = []
     coordinates_traj_circle_y = []
     coordinates_traj_middle_sec_x = []
     coordinates_traj_middle_sec_y = []
 
-    for item in trajectory_circle:
-        x = item[1]['x']
-        y = item[1]['y']
-        coordinates_traj_circle_x.append(x)
-        coordinates_traj_circle_y.append(y)
+    #for item in trajectory_circle:
+    #    x = item[1]['x']
+    #    y = item[1]['y']
+    #    coordinates_traj_circle_x.append(x)
+    #    coordinates_traj_circle_y.append(y)
         
-    for item in trajectory_middle_section:
-        x = item[1]['x']
-        y = item[1]['y']
-        coordinates_traj_middle_sec_x.append(x)
-        coordinates_traj_middle_sec_y.append(y) 
+    #for item in trajectory_middle_section:
+    #    x = item[1]['x']
+    #    y = item[1]['y']
+    #    coordinates_traj_middle_sec_x.append(x)
+    #    coordinates_traj_middle_sec_y.append(y) 
 
 
     coordinates_parking_house = generate_parking_house(height, length)
@@ -143,6 +150,7 @@ def generate_graph(height, length):
     plt.legend(loc='best')
 
 generate_graph(30, 30)
+plt.show()
 
 
     
