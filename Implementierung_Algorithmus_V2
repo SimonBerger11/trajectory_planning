@@ -1,10 +1,7 @@
 import math
 from pylab import *
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-import numpy as np
-import time
-import Analyse_Map
+import analyse_map as analyse
 
 class Node:
     def __init__(self, x, y, z):
@@ -18,9 +15,6 @@ class Node:
         
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y and self.z == other.z
-    
-    #def __str__(self):
-    #    return str(self.x) + " " + str(self.y)+ " " + str(self.minimumCost)
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -35,65 +29,100 @@ scatter(end_point[0], end_point[1], color = "green", s = 80)
 
 
 
-way = createLines()
+way = analyse.createLines()
+
 
 way_x = []
 way_y = []
 for w in way:
-    way_x.append(w[0])
-    way_y.append(w[1])
+    for wl in w:
+        way_x.append(wl[0])
+        way_y.append(wl[1])
 
-collision = []
+scatter(way_x, way_y, color= "blue", s= 30)
 
-
-def astar(start, end, middle_way):
+def astar(start, end, way_p):
     open_list = []      # Alle noch zu untersuchenden nodes
     closed_list = []    # Alle schon untersuchten nodes
 
     start_node = Node(start[0], start[1], start[2])
-    
     end_node = Node(end[0], end[1], end[2])
 
+    # start_node wird erster knoten in der open_list
     open_list.append(start_node)
     
     cnt = 0
-    while 1:
+
+    # prüfen in welcher Line der Startpunkt ist
+    #currentLine = []
+    #for cnt, wp in enumerate(way_p):
+    #    currentLine.append(cnt)
+                
+            
+            
+
+    while len(open_list) >0:
+        
         # Suche des nächsten current_node mit der kleinsten Gesamtsumme
         current_node = open_list[0]
         current_index = 0
-
-
-
-        for index, item in enumerate(middle_way):
+        for index, item in enumerate(open_list):
             if item.sum < current_node.sum:           
                 current_node = item
                 current_index = index
+
+        ax.scatter(current_node.x, current_node.y, color = "red", s = 10)
         
 
         open_list.pop(current_index)
         closed_list.append(current_node)
 
+        # Wenn Ziel gefunden wurde dann Weg zurückgeben
         if current_node == end_node:
             path = []
             current = current_node
             while current is not None:
-                ax.scatter(current.x, current.y, color = "green", s = 80)
+                ax.scatter(current.x, current.y, color = "green", s = 20)
+                #plt.pause(0.2)
                 path.append((current.x, current.y, current.z))
                 current = current.parent
             return path
-
         
-        # Update middle_way
-        for count, child in enumerate(middle_way):
+        
+        # Nächste nodes berechnen
+        children = []
+        current_koord = (current_node.x, current_node.y, current_node.z)
+
+        # Alle Linien die der Punkt berührt und die Stelle in der jeweiligen Linie berechnen
+        currentLine = []
+        for cnt, wp in enumerate(way_p):
+            for cnt1, wp1 in enumerate(wp):
+                if current_koord == wp1:
+                    currentLine.append((cnt,cnt1))
+                
+        # nächste nodes berechnen 
+        for cl in currentLine:
+            if (cl[1]+ 1) > len(way_p[cl[0]])-1 :
+                continue
+            next_pos = way_p[cl[0]][cl[1]+1] 
+
+            next_node = Node(next_pos[0], next_pos[1], next_pos[2])
+            next_node.parent = current_node
+            
+            children.append(next_node)
+
+        # Prüfen ob children schon behandelt wurden, wenn nicht -> Hinzufügen zur Open_List
+        for count, child in enumerate(children):
             flag = False
             for closed in closed_list:
                 if child.x == closed.x and child.y == closed.y:
                     flag = True
                     continue
             
-            
-            child.costStart = child.costStart + math.sqrt((child.x - end_p[0]) ** 2 + (child.x - end_p[1]) ** 2 + (w[2] - end_p[2]) ** 2)
-        
+            if count <4:
+                child.costStart = current_node.costStart + 1
+            else:
+                child.costStart = current_node.costStart + 1.4
 
             for open in open_list:
                 if child.x == open.x and child.y == open.y and child.costStart >= open.costStart:
@@ -103,38 +132,28 @@ def astar(start, end, middle_way):
             if flag == True:
                 continue
 
-            #child.minimumCost = math.sqrt((child.x - end_node.x) ** 2 + (child.y - end_node.y) ** 2 + (child.z - end_node.z) ** 2)
+            #child.costStart = current_node.costStart + 1
+            child.minimumCost = math.sqrt((child.x - end_node.x) ** 2 + (child.y - end_node.y) ** 2 + (child.z - end_node.z) ** 2)
             child.sum = child.costStart + child.minimumCost
             
             for open_node in open_list:
                 if child == open_node and child.costStart > open_node.costStart:
                     continue
+            
+            #ax.scatter(child.x,child.y, color = "orange", s = 10)
+            
+            
 
             open_list.append(child)
+        #plt.pause(0.0001)
+        cnt += 1        # for visualization
+
+        #fig.canvas.draw()
     return None
 
-def init_way (way_t, end_p, start_p):
-    mw = [] 
-    for w in way_t:
-        node = Node(w[0],w[1], w[2])
-        node.minimumCost = math.sqrt((w[0] - end_p[0]) ** 2 + (w[1] - end_p[1]) ** 2 + (w[2] - end_p[2]) ** 2)
-        #node.costStart = math.sqrt((w[0] - start_p[0]) ** 2 + (w[1] - start_p[1]) ** 2 + (w[2] - start_p[2]) ** 2)
-        mw.append(node)
-    
-    return mw 
 
 
-
-way_node = init_way (way, end_point, start_point)
-
-
-
-result = astar(start_point,end_point,way_node)
-
-
-
-
-
+result = astar(start_point,end_point,way)
 
 plt.show()        
 
