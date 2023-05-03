@@ -193,7 +193,7 @@ def generate_graph(height, length):
         plt.scatter(np.linspace(x_var, x_var, 1000), np.linspace(0, 8, 1000), color='blue')
         plt.scatter(np.linspace(x_var, x_var, 1000), np.linspace(min(coordinates_traj_circle_y), min(coordinates_traj_circle_y) + 8, 1000), color='blue')
         
-    plt.legend(loc='best')
+    #plt.legend(loc='best')
 generate_graph(30, 30)
 plt.show()
 

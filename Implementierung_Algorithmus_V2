@@ -22,14 +22,14 @@ ax = fig.add_subplot(111)
         
 start_point = (5,5,0)
 end_point = (14,10,0)
-scatter(start_point[0], start_point[1], color = "green", s = 80)
-scatter(end_point[0], end_point[1], color = "green", s = 80)
+scatter(start_point[0], start_point[1], color = "green", s = 200)
+scatter(end_point[0], end_point[1], color = "green", s = 200)
 
 #way = [(0,0,0), (1,0,0),(2,0,0),(3,0,0)]
 
 
 
-way = analyse.createLines()
+way = analyse.createLines(0.1)
 
 
 way_x = []
