@@ -1,7 +1,8 @@
 import math
 from pylab import *
 import matplotlib.pyplot as plt
-import analyse_map as analyse
+#import analyse_map as analyse
+import csv_reader
 
 class Node:
     def __init__(self, x, y, z):
@@ -20,17 +21,19 @@ fig = plt.figure()
 ax = fig.add_subplot(111)
 
         
-start_point = (14,8,0)
-end_point = (6,5,0)
+#start_point = (14,8,0)
+#end_point = (6,5,0)
+start_point = ( 6.0977,21.5315,0)
+end_point = (10.4561, 21.7387,0)
 scatter(start_point[0], start_point[1], color = "green", s = 200)
-scatter(end_point[0], end_point[1], color = "green", s = 200)
+scatter(end_point[0], end_point[1], color = "red", s = 200)
 
 #way = [(0,0,0), (1,0,0),(2,0,0),(3,0,0)]
 
 
 
-way = analyse.createLines(0.1)
-
+#way = analyse.createLines(0.1)                     # eigener Graph
+way = csv_reader.get_data("document.csv")           # vorab-karte
 
 way_x = []
 way_y = []
