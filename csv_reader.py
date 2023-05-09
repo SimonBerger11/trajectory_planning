@@ -22,12 +22,13 @@ def get_data(doc):
                 if len(elems)==0:
                     continue
                 if elems[0] == "x:":
-                    if elems[1] == " " or elems[4] == " " or elems[7] == " " :
+                    print(elems)
+                    if elems[1] == " " or elems[3] == " " or elems[5] == " " :
                         continue
                     
-                    #next.append((float(elems[1]), float(elems[4]), float(elems[7])))
-                    next.append((float(elems[1]), float(elems[4]), 0))
-                    next1.insert(0,(float(elems[1]), float(elems[4]), 0))
+                    #next.append((float(elems[1]), float(elems[4]), float(elems[5])))
+                    next.append((float(elems[1]), float(elems[3]), 0))
+                    next1.insert(0,(float(elems[1]), float(elems[3]), 0))
             elements.append(next)
             #elements.append(next1)
 

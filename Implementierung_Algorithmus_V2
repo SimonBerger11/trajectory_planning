@@ -42,7 +42,7 @@ scatter(end_point[0], end_point[1], color = "red", s = 200)
 
 
 #way = analyse.createLines(0.1)                     # eigener Graph
-way = csv_reader.get_data("document.csv")           # vorab-karte
+way = csv_reader.get_data("document_2.csv")           # vorab-karte
 
 #print(way)
 way_x = []
