@@ -24,7 +24,16 @@ ax = fig.add_subplot(111)
 #start_point = (14,8,0)
 #end_point = (6,5,0)
 end_point = ( 6.0977,21.5315,0)
-start_point = (10.4561, 21.7387,0)
+#start_point = (10.4561, 21.7387,0)
+#-0.5979","x: 10.823
+#start_point = (10.823, 15.3278,0)
+#x41.8805 y: 35.804
+#start_point = (41.8805,35.804,0)
+#x: 44.4777 y: 10.5401
+start_point = (44.4777 , 10.5401,0)
+#x: 16.7698 y: 17.417
+end_point = (16.7698, 17.417,0)
+
 scatter(start_point[0], start_point[1], color = "green", s = 200)
 scatter(end_point[0], end_point[1], color = "red", s = 200)
 
@@ -35,12 +44,16 @@ scatter(end_point[0], end_point[1], color = "red", s = 200)
 #way = analyse.createLines(0.1)                     # eigener Graph
 way = csv_reader.get_data("document.csv")           # vorab-karte
 
+#print(way)
 way_x = []
 way_y = []
-for w in way:
-    for wl in w:
-        way_x.append(wl[0])
-        way_y.append(wl[1])
+for cnt,w in enumerate(way):
+    
+    if cnt != 17:       # nur fürs testen
+        
+        for wl in w:
+            way_x.append(wl[0])
+            way_y.append(wl[1])
 
 scatter(way_x, way_y, color= "blue", s= 30)
 

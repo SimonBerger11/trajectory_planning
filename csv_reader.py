@@ -14,7 +14,6 @@ def get_data(doc):
         spamreader = csv.reader(csvfile, delimiter=',')#, quotechar='|')
 
         for row in spamreader:
-            print("t")
             next = []
             next1 = []
             for elem in row:
@@ -30,7 +29,7 @@ def get_data(doc):
                     next.append((float(elems[1]), float(elems[4]), 0))
                     next1.insert(0,(float(elems[1]), float(elems[4]), 0))
             elements.append(next)
-            elements.append(next1)
+            #elements.append(next1)
 
     return elements
 
