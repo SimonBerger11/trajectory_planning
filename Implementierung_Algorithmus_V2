@@ -23,8 +23,8 @@ ax = fig.add_subplot(111)
         
 #start_point = (14,8,0)
 #end_point = (6,5,0)
-start_point = ( 6.0977,21.5315,0)
-end_point = (10.4561, 21.7387,0)
+end_point = ( 6.0977,21.5315,0)
+start_point = (10.4561, 21.7387,0)
 scatter(start_point[0], start_point[1], color = "green", s = 200)
 scatter(end_point[0], end_point[1], color = "red", s = 200)
 
