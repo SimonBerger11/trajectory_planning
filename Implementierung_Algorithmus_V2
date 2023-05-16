@@ -42,7 +42,7 @@ scatter(end_point[0], end_point[1], color = "orange", s = 40)
 
 
 #way = analyse.createLines(0.1)                     # eigener Graph
-way = csv_reader.get_data("document_2.csv")           # vorab-karte
+way = csv_reader.get_data("document_3.csv")           # vorab-karte
 
 #print(way)
 way_x = []
@@ -66,13 +66,9 @@ def next_point(point, point_list):
     point_ruck = None
     i = 0
     for pl1 in point_list:
-        #print(pl1)
-        i += 1
-        #print(len(pl1))
         if len(pl1) == 0:
             continue
         for p in pl1:
-            #print(p)
             d1 = math.sqrt((point.x - p[0]) ** 2 + (point.y - p[1]) ** 2 + (point.z - p[2]) ** 2)
             if d1 < distance:
                 distance = d1
