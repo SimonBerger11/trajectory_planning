@@ -122,7 +122,8 @@ def astar(start, end, way_p):
             while current is not None:
                 ax.scatter(current.x, current.y, color = "green", s = 20)
                 #plt.pause(0.2)
-                path.append((current.x, current.y, current.z))
+                #path.append((current.x, current.y, current.z))
+                path.append({"x": current.x, "y": current.y, "z": current.z})
                 current = current.parent
             return path
         
@@ -192,6 +193,8 @@ def astar(start, end, way_p):
 
 
 result = astar(start_point,end_point,way)
+for r in result:
+    print(r)
 
 plt.show()        
 
