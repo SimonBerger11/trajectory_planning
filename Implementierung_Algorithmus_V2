@@ -30,12 +30,12 @@ end_point = ( 6.0977,21.5315,0)
 #x41.8805 y: 35.804
 #start_point = (41.8805,35.804,0)
 #x: 44.4777 y: 10.5401
-start_point = (44.4777 , 10.5401,0)
+start_point = (44, 10.5401,0)
 #x: 16.7698 y: 17.417
-end_point = (16.7698, 17.417,0)
+end_point = (16, 17.417,0)
 
-scatter(start_point[0], start_point[1], color = "green", s = 200)
-scatter(end_point[0], end_point[1], color = "red", s = 200)
+scatter(start_point[0], start_point[1], color = "orange", s = 40)
+scatter(end_point[0], end_point[1], color = "orange", s = 40)
 
 #way = [(0,0,0), (1,0,0),(2,0,0),(3,0,0)]
 
@@ -55,14 +55,40 @@ for cnt,w in enumerate(way):
             way_x.append(wl[0])
             way_y.append(wl[1])
 
-scatter(way_x, way_y, color= "blue", s= 30)
+scatter(way_x, way_y, color= "blue", s= 10)
+
+
+
+
+# Funktion zur Berechnung des nächsten Punktes auf der Mittellinie
+def next_point(point, point_list):
+    distance = 1000
+    point_ruck = None
+    i = 0
+    for pl1 in point_list:
+        #print(pl1)
+        i += 1
+        #print(len(pl1))
+        if len(pl1) == 0:
+            continue
+        for p in pl1:
+            #print(p)
+            d1 = math.sqrt((point.x - p[0]) ** 2 + (point.y - p[1]) ** 2 + (point.z - p[2]) ** 2)
+            if d1 < distance:
+                distance = d1
+                point_ruck = Node(p[0],p[1],p[2])
+
+    return point_ruck
 
 def astar(start, end, way_p):
     open_list = []      # Alle noch zu untersuchenden nodes
     closed_list = []    # Alle schon untersuchten nodes
 
-    start_node = Node(start[0], start[1], start[2])
-    end_node = Node(end[0], end[1], end[2])
+    start_node1 = Node(start[0], start[1], start[2])
+    end_node1 = Node(end[0], end[1], end[2])
+
+    start_node = next_point(start_node1, way_p)
+    end_node = next_point(end_node1, way_p)
 
     # start_node wird erster knoten in der open_list
     open_list.append(start_node)
