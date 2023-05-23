@@ -1,0 +1,3 @@
+import Implementierung_Algorithmus_V2
+
+astar(startpunkt: tuple(int, int,int),startpunkt: tuple(int, int,int), way_name(String))

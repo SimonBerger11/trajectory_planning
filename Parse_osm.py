@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 import matplotlib.pyplot as plt
-tree = ET.parse('Vorabkarte_mit_Parkplaetze_3.xml')
+tree = ET.parse('Vorabkarte_mit_Parkplaetze_3.osm')
 root = tree.getroot()
 
 

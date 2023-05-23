@@ -2,7 +2,8 @@ import math
 from pylab import *
 import matplotlib.pyplot as plt
 #import analyse_map as analyse
-import csv_reader
+#import csv_reader
+import parking_parser
 
 class Node:
     def __init__(self, x, y, z):
@@ -37,12 +38,23 @@ end_point = (16, 17.417,0)
 scatter(start_point[0], start_point[1], color = "orange", s = 40)
 scatter(end_point[0], end_point[1], color = "orange", s = 40)
 
-#way = [(0,0,0), (1,0,0),(2,0,0),(3,0,0)]
-
 
 
 #way = analyse.createLines(0.1)                     # eigener Graph
-way = csv_reader.get_data("document_3.csv")           # vorab-karte
+#way = csv_reader.get_data("document_3.csv")           # vorab-karte
+way_dict = parking_parser.parse_osm("Parkhaus_2.osm");
+way = []
+for wa in way_dict:
+    
+    way.append([])
+    
+    for w in wa:
+        #print(type(len(way)-1))
+        
+        way[len(way)-1].append((float(w["x"]), float(w["y"]),0))#, float(w["z"])))
+    
+#for w in way:
+#    print(w)
 
 #print(way)
 way_x = []
@@ -76,9 +88,18 @@ def next_point(point, point_list):
 
     return point_ruck
 
-def astar(start, end, way_p):
+def astar(start, end, way_name):
     open_list = []      # Alle noch zu untersuchenden nodes
     closed_list = []    # Alle schon untersuchten nodes
+
+    way_dict = parking_parser.parse_osm(way_name);
+    way_p = []
+    for wa in way_dict:
+    
+        way_p.append([])
+    
+        for w in wa:
+            way_p[len(way_p)-1].append((float(w["x"]), float(w["y"]),0))#, float(w["z"])))
 
     start_node1 = Node(start[0], start[1], start[2])
     end_node1 = Node(end[0], end[1], end[2])
@@ -90,13 +111,6 @@ def astar(start, end, way_p):
     open_list.append(start_node)
     
     cnt = 0
-
-    # prüfen in welcher Line der Startpunkt ist
-    #currentLine = []
-    #for cnt, wp in enumerate(way_p):
-    #    currentLine.append(cnt)
-                
-            
             
 
     while len(open_list) >0:
@@ -123,7 +137,7 @@ def astar(start, end, way_p):
                 ax.scatter(current.x, current.y, color = "green", s = 20)
                 #plt.pause(0.2)
                 #path.append((current.x, current.y, current.z))
-                path.append({"x": current.x, "y": current.y, "z": current.z})
+                path.insert(0,({"x": current.x, "y": current.y, "z": current.z}))
                 current = current.parent
             return path
         
@@ -192,7 +206,7 @@ def astar(start, end, way_p):
 
 
 
-result = astar(start_point,end_point,way)
+result = astar(start_point,end_point,"Parkhaus_2.osm")
 for r in result:
     print(r)
 

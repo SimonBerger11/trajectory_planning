@@ -34,6 +34,11 @@ def get_data(doc):
 
     return elements
 
+
+d = get_data("document_3.csv")
+#for s in d:
+ #   print(s)
+
     #fig = plt.figure()
     #ax = fig.add_subplot(111)
 
