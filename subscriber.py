@@ -21,8 +21,10 @@ global goal_position
 goal_position = (0,0,0)
 global current_position
 current_position = (0,0,0,0,0,0,0)
+global result
 result={}
-
+global start_point
+start_point = (44, 10.5401,0)
 
 
 def callback(data):
@@ -41,7 +43,7 @@ def callback(data):
     rospy.loginfo("Updated Pose")
 
 def goal_callback(data):
-    global goal_position
+    global goal_position, start_point, result
     
     position_x = data.pose.position.x
     position_y = data.pose.position.y
@@ -49,10 +51,14 @@ def goal_callback(data):
 
     goal_position = (position_x, position_y, position_z)
 
+    result_no_orientation = astar(start_point,goal_position,"Parkhaus_2.osm")
+    result = addOrientation(result_no_orientation)
+    marker()
+
     
 def listener():
   
-    rospy.init_node('pose_node', anonymous=True)
+    #rospy.init_node('pose_node', anonymous=True)
 
     rospy.Subscriber("/current_pose", PoseStamped, callback)
 
@@ -68,9 +74,10 @@ def goal():
 
 
 def talker():
+    global result
     incre=0
     pub = rospy.Publisher('/waypoints_pub', Lane, queue_size=10)
-    rospy.init_node('wp_pub', anonymous=True)
+    #rospy.init_node('wp_pub', anonymous=True)
     rate = rospy.Rate(1) # 1hz
     lane_msg = Lane()
     while not rospy.is_shutdown():
@@ -139,10 +146,11 @@ def talker():
 
 
 def marker():
+    global result
     count=0
     pub = rospy.Publisher('/global_waypoints_rviz2', MarkerArray, queue_size=10)
-    rospy.init_node('wp_pub_rviz', anonymous=True)
-    rate = rospy.Rate(1) # 1hz
+    #rospy.init_node('wp_pub_rviz', anonymous=True)
+    rate = rospy.Rate(11) # 1hz
     markerarray_msg = MarkerArray()
     marker_msg = Marker()
     while not rospy.is_shutdown():
@@ -168,16 +176,16 @@ def marker():
             marker_msg.pose = pose_message
             # defining the size of arrows 
             vector_message = Vector3()
-            vector_message.x = 0.6
-            vector_message.y = 0.2
-            vector_message.z = 0.2
+            vector_message.x = 1.0
+            vector_message.y = 0.4
+            vector_message.z = 0.4
             marker_msg.scale = vector_message
             # defining color of arrows
             color_message = std_msgs.msg.ColorRGBA()
             color_message.r = 1.0
             color_message.g = 0.0
             color_message.b = 0.0
-            color_message.a = 0.5
+            color_message.a = 1.0
             marker_msg.color = color_message
 
             #marker_msg.lifetime = rospy.Time.now()
@@ -222,12 +230,12 @@ ax = fig.add_subplot(111)
 #x41.8805 y: 35.804
 #start_point = (41.8805,35.804,0)
 #x: 44.4777 y: 10.5401
-start_point = (44, 10.5401,0)
+#start_point = (44, 10.5401,0)
 #x: 16.7698 y: 17.417
-end_point = (16, 17.417,0)
+#end_point = (16, 17.417,0)
 
-scatter(start_point[0], start_point[1], color = "orange", s = 40)
-scatter(end_point[0], end_point[1], color = "orange", s = 40)
+#scatter(start_point[0], start_point[1], color = "orange", s = 40)
+#scatter(end_point[0], end_point[1], color = "orange", s = 40)
 
 
 
@@ -444,13 +452,13 @@ if __name__ == '__main__':
     #listener() 
     try:
         #talker()
-        #goal()
+        goal()
         #listener()
         #print(Subscriber_Goal.ret_goal_rec())
         #if(Subscriber_Goal.ret_goal_rec() == 1):
-        result_no_orientation = astar(start_point,end_point,"Parkhaus_2.osm")
-        result = addOrientation(result_no_orientation)
-        marker()
+        #result_no_orientation = astar(start_point,end_point,"Parkhaus_2.osm")
+        #result = addOrientation(result_no_orientation)
+        #marker()
 
         
     except rospy.ROSInterruptException:
