@@ -39,7 +39,7 @@ def parse_osm(name):
                             point["z"] = tag.attrib["v"]
                     lines[len(lines) -1].append(point)
     
-    
+   
     return lines
   
 

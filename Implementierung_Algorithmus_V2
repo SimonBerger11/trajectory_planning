@@ -17,6 +17,9 @@ class Node:
         
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y and self.z == other.z
+    
+    def __str__(self) -> str:
+        return  str(self.x) + " "+str(self.y)+ " "+str(self.z) 
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -31,9 +34,14 @@ end_point = ( 6.0977,21.5315,0)
 #x41.8805 y: 35.804
 #start_point = (41.8805,35.804,0)
 #x: 44.4777 y: 10.5401
-start_point = (44, 10.5401,0)
+#end_point = (13, 21.54,0)
 #x: 16.7698 y: 17.417
-end_point = (16, 17.417,0)
+#start_point = (47, 22.8,0)
+
+end_point = (44.1, 10.5401,0)
+#x: 16.7698 y: 17.417
+#end_point = (15.9, 17.4,0)
+start_point = (16,16,0)
 
 scatter(start_point[0], start_point[1], color = "orange", s = 40)
 scatter(end_point[0], end_point[1], color = "orange", s = 40)
@@ -53,10 +61,7 @@ for wa in way_dict:
         
         way[len(way)-1].append((float(w["x"]), float(w["y"]),0))#, float(w["z"])))
     
-#for w in way:
-#    print(w)
 
-#print(way)
 way_x = []
 way_y = []
 for cnt,w in enumerate(way):
@@ -105,18 +110,26 @@ def astar(start, end, way_name):
     end_node1 = Node(end[0], end[1], end[2])
 
     start_node = next_point(start_node1, way_p)
-    end_node = next_point(end_node1, way_p)
 
-    # start_node wird erster knoten in der open_list
+    print(start_node)
+    end_node = next_point(end_node1, way_p)
+    print(end_node)
+
+    # start_node wird erster knoten in der open_list 
     open_list.append(start_node)
     
     cnt = 0
             
 
     while len(open_list) >0:
+
+        
         
         # Suche des nächsten current_node mit der kleinsten Gesamtsumme
         current_node = open_list[0]
+
+        #print(current_node)
+
         current_index = 0
         for index, item in enumerate(open_list):
             if item.sum < current_node.sum:           
@@ -131,6 +144,7 @@ def astar(start, end, way_name):
 
         # Wenn Ziel gefunden wurde dann Weg zurückgeben
         if current_node == end_node:
+            
             path = []
             current = current_node
             while current is not None:
@@ -207,6 +221,7 @@ def astar(start, end, way_name):
 
 
 result = astar(start_point,end_point,"Parkhaus_2.osm")
+print(result)
 for r in result:
     print(r)
 
