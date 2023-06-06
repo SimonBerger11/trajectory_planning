@@ -29,7 +29,7 @@ start_point = (44, 10.5401,0)
 
 def callback(data):
     global current_position
-
+    global start_point
     position_x = data.pose.position.x
     position_y = data.pose.position.y
     position_z = data.pose.position.z
@@ -39,12 +39,11 @@ def callback(data):
     orientation_w = data.pose.orientation.w
 
     current_position = (position_x, position_y, position_z, orientation_x, orientation_y, orientation_z, orientation_w)
-
-    rospy.loginfo("Updated Pose")
+    start_point = (position_x, position_y, 0)
+    #rospy.loginfo("Updated Pose")
 
 def goal_callback(data):
     global goal_position, start_point, result
-    
     position_x = data.pose.position.x
     position_y = data.pose.position.y
     position_z = data.pose.position.z
@@ -53,30 +52,25 @@ def goal_callback(data):
 
     result_no_orientation = astar(start_point,goal_position,"Parkhaus_2.osm")
     result = addOrientation(result_no_orientation)
+
     marker()
+   
 
-    
-def listener():
-  
-    #rospy.init_node('pose_node', anonymous=True)
-
-    rospy.Subscriber("/current_pose", PoseStamped, callback)
-
-    rospy.spin()
 
 def goal():
     rospy.init_node('goal_node', anonymous=True)
-
+    
     rospy.Subscriber("/move_base_simple/goal", PoseStamped, goal_callback)
     
+    #rospy.Subscriber("/current_pose", PoseStamped, callback, queue_size = 1)
+
     rospy.spin()
-     
 
 
 def talker():
     global result
     incre=0
-    pub = rospy.Publisher('/waypoints_pub', Lane, queue_size=10)
+    pub2 = rospy.Publisher('/waypoints', Lane, queue_size=10)
     #rospy.init_node('wp_pub', anonymous=True)
     rate = rospy.Rate(1) # 1hz
     lane_msg = Lane()
@@ -141,7 +135,7 @@ def talker():
         lane_msg.closest_object_velocity=0
         lane_msg.is_blocked=False
         
-        pub.publish(lane_msg)
+        pub2.publish(lane_msg)
         rate.sleep()
 
 
@@ -150,11 +144,12 @@ def marker():
     count=0
     pub = rospy.Publisher('/global_waypoints_rviz2', MarkerArray, queue_size=10)
     #rospy.init_node('wp_pub_rviz', anonymous=True)
-    rate = rospy.Rate(11) # 1hz
+    rate = rospy.Rate(150) # 1hz
     markerarray_msg = MarkerArray()
-    marker_msg = Marker()
     while not rospy.is_shutdown():
         for wp in result:
+            
+            marker_msg = Marker()
             header = std_msgs.msg.Header()
             header.seq = 0
             header.stamp = rospy.Time.now()
@@ -196,9 +191,10 @@ def marker():
             marker_msg.mesh_resource = "TEST"
             marker_msg.mesh_use_embedded_materials = False
             markerarray_msg.markers.append(marker_msg)
+            rate.sleep()
+            count=count+1
             pub.publish(markerarray_msg)
             
-            rate.sleep()
         break
 
 
