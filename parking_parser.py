@@ -1,6 +1,18 @@
 import xml.etree.ElementTree as ET
 import matplotlib.pyplot as plt
 
+
+# Funktion zum parsen eines Osm-Files für die von uns benötigten Informationen
+# Hier: Suche nach den Punkten der jeweiligen Straßen-Linien und Parkplatz-Linien 
+# Input: Pfad zum osm-File als String
+# Output: Liste (Gesamtliste aller Wege) an Listen (Liste aller Punkte in jeweiligem Weg) von Dictionaries (Punkt 
+# mit x-, y- und z-Koord) 
+
+# Funktionsweise:
+# 1. Alle wege mit gesuchten Wegtypen heraussuchen 
+# 2. ids der jeweiligen Punkte in den wegen heraussuchen 
+# 3. nach ids suchen, um die koordinaten der Punkte herauszusuchen
+
 def parse_osm(name):
     tree = ET.parse(name)
     root = tree.getroot()
@@ -8,20 +20,21 @@ def parse_osm(name):
     points = []
     ref = []
     i = 0
-    #extract from xml
+    # Schritt 1
     for way in root.findall("way"):
         type = ""
         for tag in way.findall("tag"):
             if tag.attrib["k"] == "type":
                 type = tag.attrib["v"]
-        if type == "parking_space" or type == "line_thin":
+        if type == "parking_space" or type == "line_thin":          # Wegtyp nach denen im Osm-File gesucht wird
             ref.append([])
+            # Schritt 2
             for nd in way.findall("nd"):
-                #print(nd.attrib["ref"])
                 ref[i].append(nd.attrib["ref"])
                 
             i += 1
     
+    # Schritt 3
     lines = []
     for re in ref:
         lines.append([])
@@ -43,7 +56,3 @@ def parse_osm(name):
     return lines
   
 
-#t = parse_osm();
-
-#for f in t:
-#    print(f)

@@ -5,6 +5,12 @@ import matplotlib.pyplot as plt
 #import csv_reader
 import parking_parser
 
+# Klasse Node
+# Attribute: x,y,z: Koordinaten
+# parent: Vorgänger-Punkt
+# costStart: Kosten um diesen Punkt zu erreichen
+# minimumCost: Entfernung zum Endpunkt
+# sum: Summe von costStart und minimumCost
 class Node:
     def __init__(self, x, y, z):
         self.x = x
@@ -22,41 +28,20 @@ fig = plt.figure()
 ax = fig.add_subplot(111)
 
         
-#start_point = (14,8,0)
-#end_point = (6,5,0)
-end_point = ( 6.0977,21.5315,0)
-#start_point = (10.4561, 21.7387,0)
-#-0.5979","x: 10.823
-#start_point = (10.823, 15.3278,0)
-#x41.8805 y: 35.804
-#start_point = (41.8805,35.804,0)
-#x: 44.4777 y: 10.5401
 start_point = (44, 10.5401,0)
-#x: 16.7698 y: 17.417
 end_point = (16, 17.417,0)
 
 scatter(start_point[0], start_point[1], color = "orange", s = 40)
 scatter(end_point[0], end_point[1], color = "orange", s = 40)
 
-
-
-#way = analyse.createLines(0.1)                     # eigener Graph
-#way = csv_reader.get_data("document_3.csv")           # vorab-karte
-way_dict = parking_parser.parse_osm("Parkhaus_2.osm");
+way_dict = parking_parser.parse_osm("Parkhaus_2.osm")       # informationen der wege aus dem osm-file holen
 way = []
-for wa in way_dict:
-    
-    way.append([])
-    
-    for w in wa:
-        #print(type(len(way)-1))
-        
+for wa in way_dict:   
+    way.append([])   
+    for w in wa:     
         way[len(way)-1].append((float(w["x"]), float(w["y"]),0))#, float(w["z"])))
-    
-#for w in way:
-#    print(w)
 
-#print(way)
+# plotten aller Wege    
 way_x = []
 way_y = []
 for cnt,w in enumerate(way):
@@ -73,6 +58,11 @@ scatter(way_x, way_y, color= "blue", s= 10)
 
 
 # Funktion zur Berechnung des nächsten Punktes auf der Mittellinie
+# input: Point (Klasse Node) und point_list (output des osm-files)
+# Output: Node
+# Funktionsweise: durchlaufen aller Punkte in der point_list, Abstand zu point berechnen, wenn abstand kleiner 
+# dem bisherigen geringsten abstand ist dann wird der aktuelle point zu point ruck, nachdem alle punkte behandelt wurden
+# Rückgabe von point_ruck 
 def next_point(point, point_list):
     distance = 1000
     point_ruck = None
@@ -87,6 +77,25 @@ def next_point(point, point_list):
                 point_ruck = Node(p[0],p[1],p[2])
 
     return point_ruck
+
+
+# astar-Funktion:
+# Berechnet kürzesten Weg von einem festgelegten Startpunkt zu einem festgelegten Endpunkt über vorgegebene Straßen 
+# Input: start(tuple), end(tuple), way_name(string mit pfadname zum osm-file)
+# Funktionsweise:
+# Definition von Begrifflichkeiten:
+# Open-List: alle noch nicht analysierten aber bekannten Knoten
+# Closed-List: alle analysierten und nicht erneut zu analysierenden Knoten
+# 1. Start-Punkt wird zu einer Liste Open List hinzugefügt
+# 2. Aus der Open_List wird der Knoten mit dem geringsten Abstand zum Ziel ausgewählt (in der 1. Iteration der Startpunkt)
+# 3. Überprüfen ob aktueller Punkt der End-Punkt ist, wenn ja: Rückgabe des aktuellen Punkts mit allen Vorgängern, 
+# wenn nein: zu 4.
+# 4. Prüfen auf welchen Wegen der aktuelle Punkt in den vom Osm-File herausgelesenen Wegen liegt 
+# 5. den jeweils nachfolgenden Punkt auf den betroffenen Wegen herausfinden, prüfen ob Weg schon behandelt wurde, wenn ja: 
+# nicht weiter behandeln
+# 6. Behandlung der jeweiligen Punkte: Berechnung der Entfernung, Hinzufügen zu einer Gesamtentfernung, Setzen des 
+# aktuellen Punkts als Vorgänger und Hinzufügen zur Open-List   
+# 7. Zurück zu 2. 
 
 def astar(start, end, way_name):
     open_list = []      # Alle noch zu untersuchenden nodes
@@ -104,6 +113,7 @@ def astar(start, end, way_name):
     start_node1 = Node(start[0], start[1], start[2])
     end_node1 = Node(end[0], end[1], end[2])
 
+    # Zur Berechnung des nächsten Punktes auf der Mittellinie 
     start_node = next_point(start_node1, way_p)
     end_node = next_point(end_node1, way_p)
 
@@ -135,8 +145,6 @@ def astar(start, end, way_name):
             current = current_node
             while current is not None:
                 ax.scatter(current.x, current.y, color = "green", s = 20)
-                #plt.pause(0.2)
-                #path.append((current.x, current.y, current.z))
                 path.insert(0,({"x": current.x, "y": current.y, "z": current.z}))
                 current = current.parent
             return path
@@ -174,8 +182,8 @@ def astar(start, end, way_name):
             
             if count <4:
                 child.costStart = current_node.costStart + 1
-            else:
-                child.costStart = current_node.costStart + 1.4
+            #else:
+            #    child.costStart = current_node.costStart + 1.4
 
             for open in open_list:
                 if child.x == open.x and child.y == open.y and child.costStart >= open.costStart:
@@ -185,23 +193,20 @@ def astar(start, end, way_name):
             if flag == True:
                 continue
 
-            #child.costStart = current_node.costStart + 1
+           
             child.minimumCost = math.sqrt((child.x - end_node.x) ** 2 + (child.y - end_node.y) ** 2 + (child.z - end_node.z) ** 2)
+            # Sum: Entfernung zum Ziel+ anzahl an übersprungenen Knoten
             child.sum = child.costStart + child.minimumCost
             
             for open_node in open_list:
                 if child == open_node and child.costStart > open_node.costStart:
                     continue
             
-            #ax.scatter(child.x,child.y, color = "orange", s = 10)
-            
-            
 
             open_list.append(child)
-        #plt.pause(0.0001)
+        
         cnt += 1        # for visualization
 
-        #fig.canvas.draw()
     return None
 
 def get_quaternion_from_euler(roll, pitch, yaw):
