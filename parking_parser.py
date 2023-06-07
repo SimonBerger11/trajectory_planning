@@ -2,16 +2,16 @@ import xml.etree.ElementTree as ET
 import matplotlib.pyplot as plt
 
 
-# Funktion zum parsen eines Osm-Files für die von uns benötigten Informationen
-# Hier: Suche nach den Punkten der jeweiligen Straßen-Linien und Parkplatz-Linien 
-# Input: Pfad zum osm-File als String
-# Output: Liste (Gesamtliste aller Wege) an Listen (Liste aller Punkte in jeweiligem Weg) von Dictionaries (Punkt 
-# mit x-, y- und z-Koord) 
+# Function to parse an osm-file for the for us relevant information
+# In this case: Searching for points of street-lines and parking-lines 
+# input: path to the osm-file as a string
+# output: list (total list of all ways) of lists (liste of all points of a way) of dictionaries (point
+# with x-, y- und z-coordinates) 
 
-# Funktionsweise:
-# 1. Alle wege mit gesuchten Wegtypen heraussuchen 
-# 2. ids der jeweiligen Punkte in den wegen heraussuchen 
-# 3. nach ids suchen, um die koordinaten der Punkte herauszusuchen
+# Functionality:
+# 1. Search for all ways with the way types concerned
+# 2. Search for the ids of the points in the way
+# 3. search for ids, to get the coordinates of the points
 
 def parse_osm(name):
     tree = ET.parse(name)
@@ -20,21 +20,21 @@ def parse_osm(name):
     points = []
     ref = []
     i = 0
-    # Schritt 1
+    # step 1
     for way in root.findall("way"):
         type = ""
         for tag in way.findall("tag"):
             if tag.attrib["k"] == "type":
                 type = tag.attrib["v"]
-        if type == "parking_space" or type == "line_thin":          # Wegtyp nach denen im Osm-File gesucht wird
+        if type == "parking_space" or type == "line_thin":          # waytypes concerned
             ref.append([])
-            # Schritt 2
+            # step 2
             for nd in way.findall("nd"):
                 ref[i].append(nd.attrib["ref"])
                 
             i += 1
     
-    # Schritt 3
+    # step 3
     lines = []
     for re in ref:
         lines.append([])

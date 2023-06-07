@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 #import csv_reader
 import parking_parser
 
-# Klasse Node
-# Attribute: x,y,z: Koordinaten
-# parent: Vorgänger-Punkt
-# costStart: Kosten um diesen Punkt zu erreichen
-# minimumCost: Entfernung zum Endpunkt
-# sum: Summe von costStart und minimumCost
+# Class Node
+# attributes: x,y,z: coordinates
+# parent: predecessor point
+# costStart: cost to reach this point
+# minimumCost: distance to the endpoint
+# sum: sum of costStart and minimumCost
 class Node:
     def __init__(self, x, y, z):
         self.x = x
@@ -24,6 +24,8 @@ class Node:
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y and self.z == other.z
 
+# For testing the functionality
+'''
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
@@ -34,7 +36,7 @@ end_point = (16, 17.417,0)
 scatter(start_point[0], start_point[1], color = "orange", s = 40)
 scatter(end_point[0], end_point[1], color = "orange", s = 40)
 
-way_dict = parking_parser.parse_osm("Parkhaus_2.osm")       # informationen der wege aus dem osm-file holen
+way_dict = parking_parser.parse_osm("Parkhaus_2.osm")       
 way = []
 for wa in way_dict:   
     way.append([])   
@@ -54,15 +56,15 @@ for cnt,w in enumerate(way):
 
 scatter(way_x, way_y, color= "blue", s= 10)
 
+'''
 
 
-
-# Funktion zur Berechnung des nächsten Punktes auf der Mittellinie
-# input: Point (Klasse Node) und point_list (output des osm-files)
+# Function for calculation the next point on the center line
+# input: point (class Node) and point_list (output of the osm-file)
 # Output: Node
-# Funktionsweise: durchlaufen aller Punkte in der point_list, Abstand zu point berechnen, wenn abstand kleiner 
-# dem bisherigen geringsten abstand ist dann wird der aktuelle point zu point ruck, nachdem alle punkte behandelt wurden
-# Rückgabe von point_ruck 
+# Functionality: iterating over all points in the point_list, calculate distance to input point, if the distance is less
+# the current smallest distance then the current point becomes the point ruck, after iteration over all points ->
+# Return point_ruck 
 def next_point(point, point_list):
     distance = 1000
     point_ruck = None
@@ -79,27 +81,28 @@ def next_point(point, point_list):
     return point_ruck
 
 
-# astar-Funktion:
-# Berechnet kürzesten Weg von einem festgelegten Startpunkt zu einem festgelegten Endpunkt über vorgegebene Straßen 
-# Input: start(tuple), end(tuple), way_name(string mit pfadname zum osm-file)
-# Funktionsweise:
-# Definition von Begrifflichkeiten:
-# Open-List: alle noch nicht analysierten aber bekannten Knoten
-# Closed-List: alle analysierten und nicht erneut zu analysierenden Knoten
-# 1. Start-Punkt wird zu einer Liste Open List hinzugefügt
-# 2. Aus der Open_List wird der Knoten mit dem geringsten Abstand zum Ziel ausgewählt (in der 1. Iteration der Startpunkt)
-# 3. Überprüfen ob aktueller Punkt der End-Punkt ist, wenn ja: Rückgabe des aktuellen Punkts mit allen Vorgängern, 
-# wenn nein: zu 4.
-# 4. Prüfen auf welchen Wegen der aktuelle Punkt in den vom Osm-File herausgelesenen Wegen liegt 
-# 5. den jeweils nachfolgenden Punkt auf den betroffenen Wegen herausfinden, prüfen ob Weg schon behandelt wurde, wenn ja: 
-# nicht weiter behandeln
-# 6. Behandlung der jeweiligen Punkte: Berechnung der Entfernung, Hinzufügen zu einer Gesamtentfernung, Setzen des 
-# aktuellen Punkts als Vorgänger und Hinzufügen zur Open-List   
-# 7. Zurück zu 2. 
+# astar-function:
+# Calculates the shortest way from the defined start_point to a defined end_point via prescribed ways
+# Input: start(tuple), end(tuple), way_name(string with the pathname of the osm-file)
+# Functionality:
+# Definitions of terminology:
+# open_list: all not analysed but familiar nodes
+# closed_list: all analysed nodes, which should not be analysed again
+# 1. Add start_point to list open_list
+# 2. Choose the node in the open_list with the lowest distance to the destination (Iteration 1: start_point)
+# 3. Check if the current_point is the end_point
+# yes: return the current point wiht all predecessors
+# no: continue with 4 
+# 4. Check on which ways the current point is located on the ways of the osm-file 
+# 5. Find for each case the next point on the ways concerned, check if the point was already handled
+# yes: dont handle it again
+# 6. Handling of the points concerned: Calculation of the distance, Adding to a total distance, Setting the current point
+# as predecessor and adding to the open_list
+# 7. Continue with step 2
 
 def astar(start, end, way_name):
-    open_list = []      # Alle noch zu untersuchenden nodes
-    closed_list = []    # Alle schon untersuchten nodes
+    open_list = []     
+    closed_list = []   
 
     way_dict = parking_parser.parse_osm(way_name);
     way_p = []
@@ -108,16 +111,16 @@ def astar(start, end, way_name):
         way_p.append([])
     
         for w in wa:
-            way_p[len(way_p)-1].append((float(w["x"]), float(w["y"]),0))#, float(w["z"])))
+            way_p[len(way_p)-1].append((float(w["x"]), float(w["y"]),0))
 
     start_node1 = Node(start[0], start[1], start[2])
     end_node1 = Node(end[0], end[1], end[2])
 
-    # Zur Berechnung des nächsten Punktes auf der Mittellinie 
+    # For calculation the next_point on the center_line
     start_node = next_point(start_node1, way_p)
     end_node = next_point(end_node1, way_p)
 
-    # start_node wird erster knoten in der open_list
+    # start_node added to the open_list
     open_list.append(start_node)
     
     cnt = 0
@@ -125,7 +128,7 @@ def astar(start, end, way_name):
 
     while len(open_list) >0:
         
-        # Suche des nächsten current_node mit der kleinsten Gesamtsumme
+        # Searching for the next current_node with the lowest total sum
         current_node = open_list[0]
         current_index = 0
         for index, item in enumerate(open_list):
@@ -139,7 +142,7 @@ def astar(start, end, way_name):
         open_list.pop(current_index)
         closed_list.append(current_node)
 
-        # Wenn Ziel gefunden wurde dann Weg zurückgeben
+        # if the destination is found the return the total path
         if current_node == end_node:
             path = []
             current = current_node
@@ -150,18 +153,18 @@ def astar(start, end, way_name):
             return path
         
         
-        # Nächste nodes berechnen
+        # Calculate next_nodes
         children = []
         current_koord = (current_node.x, current_node.y, current_node.z)
 
-        # Alle Linien die der Punkt berührt und die Stelle in der jeweiligen Linie berechnen
+        # Calculate all lines in which the current point is a part and calculate the position in the line
         currentLine = []
         for cnt, wp in enumerate(way_p):
             for cnt1, wp1 in enumerate(wp):
                 if current_koord == wp1:
                     currentLine.append((cnt,cnt1))
                 
-        # nächste nodes berechnen 
+        # Calculate next nodes
         for cl in currentLine:
             if (cl[1]+ 1) > len(way_p[cl[0]])-1 :
                 continue
@@ -172,7 +175,7 @@ def astar(start, end, way_name):
             
             children.append(next_node)
 
-        # Prüfen ob children schon behandelt wurden, wenn nicht -> Hinzufügen zur Open_List
+        # Check if the node was already handled, if yes: add that node to the open_list
         for count, child in enumerate(children):
             flag = False
             for closed in closed_list:
@@ -195,7 +198,7 @@ def astar(start, end, way_name):
 
            
             child.minimumCost = math.sqrt((child.x - end_node.x) ** 2 + (child.y - end_node.y) ** 2 + (child.z - end_node.z) ** 2)
-            # Sum: Entfernung zum Ziel+ anzahl an übersprungenen Knoten
+            
             child.sum = child.costStart + child.minimumCost
             
             for open_node in open_list:
