@@ -1,0 +1,43 @@
+Öffne "Files" und gehe von "Home" zu: carla -> Unreal -> CarlaUE4
+Doppelklick auf "CarlaUE4.uproject"
+
+Wenn sich der Editor geffnet hat, starte die Simulation über "Play"
+
+Öffne neues Terminal und füge Folgendes ein (Einfügen in Terminal Strg + Shift + V):
+cd autoware.ai/
+export CARLA_MAPS_PATH=/opt/carla/HDMaps
+source /opt/carla-ros-bridge/melodic/setup.bash
+source install/setup.bash
+roslaunch carla_autoware_bridge Autoware_Carla_ROS_Bridge_Twizy.launch
+
+In der Simulation erkennst Du jetzt nicht viel, weil die Kamera falsch positioniert ist. 
+Wenn Dich das stört: Rechtsklick in das Bild und sieh dich um, bis du in der Ferne etwas siehst. 
+Linksklick auf irgendein Objekt. Drücke F, die Kamera sollte jetzt zum Parkplatz gesprungen sein
+
+Öffne neues Terminal und füge Folgendes ein:
+cd autoware.ai/
+source install/setup.bash
+roslaunch runtime_manager runtime_manager.launch
+
+Nachdem sich der Runtime Manager geöffnet hat: Klicke auf "RViz"
+
+Gehe wieder zum Runtime Manager
+Wechsel zu Tab "Setup"
+Aktiviere Vehicle Model
+
+Wechsel zu Tab "Map"
+Aktiviere die nötigen Karten
+
+Wechsel zu Tab "Sensing"
+Aktiviere voxel_grid_filter, ray_ground_filter
+
+Wechsel zu Tab "Computing"
+Aktiviere auf der linken Seite ndt_matching, vel_pose_connect, lidar_euclidean_cluster_detect, costmap_generator
+Aktiviere auf der rechten Seite lane_rule, lane_stop, lane_select, astar_avoid, velocity_set, pure_pursuit, twist_filter
+
+Wechsel zu Tab Quick Start
+aktiviere Map
+
+Jetzt kann das Fahrzeug Strecken planen. Wechsel dazu zu RViz und bewege das Fahrzeug zum gewünschten Startpunkt (Über 2D Pose Estimate). Beim ersten Mal driftet das Fahrzeug wild durch die Gegend. Warte, bis es sich lokalisiert hat. Danach kannst Du über 2D Nav Goal ein Ziel geben. Für eine neue Trajektorie, deaktiviere und reaktiviere Map im Tab Quick Start
+
+Zum verwenden Eures Planers, deaktiviere Map im Tab Quick Start
