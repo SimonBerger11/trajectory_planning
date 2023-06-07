@@ -1,12 +1,14 @@
+#!/usr/bin/env python
+# coding=utf-8
+
 ########################################################################
 #FileName: subscriber.py
 #Author : Christian Göller, Jonas Bäuml, Simon Berger, Elias Häring 
 #Last Modified On : 09.06.2023
-##Description : Trajectory planner with start and end position for searching a parking space 
+#Description : Trajectory planner with start and end position for searching a parking space 
 ########################################################################
 
-#!/usr/bin/env python
-# coding=utf-8
+
 import rospy
 import time
 import math
@@ -18,7 +20,6 @@ from visualization_msgs.msg import Marker
 from visualization_msgs.msg import MarkerArray
 import matplotlib.pyplot as plt
 import parking_parser
-import Subscriber_Goal
 
 
 
@@ -33,6 +34,7 @@ start_point = (44, 10.5401,0)
 global osmfile
 osmfile = "Parkhaus_2.osm" 
 
+
 # listen to current position of vehicle
 def current_pos_callback(data):
     global current_position, start_point
@@ -46,6 +48,7 @@ def current_pos_callback(data):
     current_position = (position_x, position_y, position_z, orientation_x, orientation_y, orientation_z, orientation_w)
     start_point = (position_x, position_y, 0)                           # current position is start point for trajectory planner
 
+
 # initialize the trajectory planner when a goal position is given from rviz
 def goal_pos_callback(data):
     global goal_position, start_point, wp_array_or,osmfile
@@ -56,6 +59,7 @@ def goal_pos_callback(data):
     result_no_orientation = astar(start_point,goal_position,osmfile)     # trajecotry is planned 
     wp_array_or = addOrientation(result_no_orientation)                  # wp_array_or contains array of waypoints for trajectory 
     marker_rviz()                                                        # waypoints are visualised in rviz 
+    wp_publisher()                                                       # waypoints are published to vehicle
 
 
 # subscriber for goal position 
@@ -66,12 +70,13 @@ def goal():
     rospy.spin()
 
 
-# publisher for publishing waypoint array of trajectory to vehicle car 
+# publisher for publishing waypoint array of trajectory to vehicle 
 def wp_publisher():
     global wp_array_or           
     incre=0
-    pub2 = rospy.Publisher('/waypoints', Lane, queue_size=10)
-    rate = rospy.Rate(1)        # 1hz
+    zaehler =0
+    pub2 = rospy.Publisher('/waypoints', LaneArray, queue_size=10)
+    rate = rospy.Rate(150)        # 150 hz
     lane_array_msg = LaneArray()
     # begin LaneArray Message
     lane_array_msg.id=0
@@ -129,6 +134,7 @@ def wp_publisher():
             first_wp.cost = 0.0
             first_wp.time_cost = 0.0
             first_wp.direction = 0
+            zaehler = zaehler+1
             # end Waypoint
             waypointarray.append(first_wp)
             rate.sleep()
@@ -144,17 +150,18 @@ def wp_publisher():
         pub2.publish(lane_array_msg)
         break
 
+
 # publisher for visualisizing waypoint array of trajectory to rviz
 def marker_rviz():
     global wp_array_or
     count=0
     pub = rospy.Publisher('/global_waypoints_rviz2', MarkerArray, queue_size=10)
-    rate = rospy.Rate(150) # (1/150) hz
+    rate = rospy.Rate(150) # 150 hz
     # begin MarkerArray Message
     markerarray_msg = MarkerArray()
     while not rospy.is_shutdown():
         for wp in wp_array_or:
-            #Begin Marker Message
+            # begin Marker Message
             marker_msg = Marker()
             header = std_msgs.msg.Header()
             header.seq = 0
@@ -193,7 +200,7 @@ def marker_rviz():
             marker_msg.text = "TEST"
             marker_msg.mesh_resource = "TEST"
             marker_msg.mesh_use_embedded_materials = False
-            #end Marker Message
+            # end Marker Message
             markerarray_msg.markers.append(marker_msg)
             rate.sleep()
             count=count+1
@@ -202,7 +209,7 @@ def marker_rviz():
         break
 
 
-# convert euler angels (x,y,z) to quaterions 
+# convert euler angels (x,y,z) to quaternions 
 def get_quaternion_from_euler(roll, pitch, yaw):
   qx = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
   qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
@@ -224,24 +231,27 @@ class Node:
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y and self.z == other.z
 
-fig = plt.figure()
-ax = fig.add_subplot(111)        
-way_dict = parking_parser.parse_osm("Parkhaus_2.osm");
-way = []
-for wa in way_dict:
-    way.append([])
-    for w in wa:
-        #print(type(len(way)-1))
-        way[len(way)-1].append((float(w["x"]), float(w["y"]),0))#, float(w["z"])))
 
-way_x = []
-way_y = []
-for cnt,w in enumerate(way):
-    if cnt != 17:        #nur fürs testen
-        for wl in w:
-            way_x.append(wl[0])
-            way_y.append(wl[1])
-scatter(way_x, way_y, color= "blue", s= 10)
+###############################################      Code for plotting trajectory    ###############################################
+#fig = plt.figure()
+#ax = fig.add_subplot(111)        
+#way_dict = parking_parser.parse_osm("Parkhaus_2.osm");
+#way = []
+#for wa in way_dict:
+#    way.append([])
+#    for w in wa:
+#        #print(type(len(way)-1))
+#        way[len(way)-1].append((float(w["x"]), float(w["y"]),0))#, float(w["z"])))
+
+#way_x = []
+#way_y = []
+#for cnt,w in enumerate(way):
+#    if cnt != 17:        #nur fürs testen
+#        for wl in w:
+#            way_x.append(wl[0])
+#            way_y.append(wl[1])
+#scatter(way_x, way_y, color= "blue", s= 10)
+####################################################################################################################################
 
 
 # Funktion zur Berechnung des nächsten Punktes auf der Mittellinie
@@ -284,7 +294,6 @@ def astar(start, end, way_name):
             if item.sum < current_node.sum:           
                 current_node = item
                 current_index = index
-
         ax.scatter(current_node.x, current_node.y, color = "red", s = 10)
         open_list.pop(current_index)
         closed_list.append(current_node)
@@ -370,7 +379,6 @@ def addOrientation(waypoints):
             point["qz"] = quaternions[2]
             point["qw"] = quaternions[3]
     return waypoints
-
 
 
 if __name__ == '__main__':
